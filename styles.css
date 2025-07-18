@@ -1,0 +1,188 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 30px;
+  color: #0a97b0;
+}
+
+.roulette-container {
+  position: relative;
+  width: 700px;
+  height: 700px;
+  margin: 0 auto 40px;
+}
+
+.roulette-wheel {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s linear;
+  transform: rotate(0deg);
+}
+
+.wheel-segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transform-origin: bottom right;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.segment-content {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  right: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(90deg);
+}
+
+.segment-content img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.wheel-center {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background-color: #fff;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+}
+
+.selector {
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 80px;
+  background-color: #333;
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+  z-index: 10;
+  filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.7));
+  pointer-events: none;
+  border: 2px solid white;
+}
+
+.lever-container {
+  position: relative;
+  width: 100px;
+  height: 200px;
+  margin: 0 auto 40px;
+}
+
+.lever-base {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 20px;
+  background-color: #333;
+  border-radius: 10px;
+}
+
+.lever {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) rotate(0deg);
+  transform-origin: bottom center;
+  width: 20px;
+  height: 150px;
+  background-color: #666;
+  border-radius: 10px;
+  cursor: grab;
+  transition: transform 0.2s ease;
+}
+
+.lever::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: #ff4500;
+  border-radius: 50%;
+}
+
+.lever-power {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  text-align: center;
+}
+
+.power-meter {
+  width: 100%;
+  height: 20px;
+  background-color: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.power-level {
+  height: 100%;
+  width: 0%;
+  background-color: #ff4500;
+  transition: width 0.3s ease;
+}
+
+.result-container {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#goalDescription {
+  margin-top: 20px;
+  text-align: left;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
