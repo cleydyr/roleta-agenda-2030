@@ -11,11 +11,12 @@
 <body>
   <div class="container">
     <div class="language-selector">
-      <label for="language" id="languageLabel">Language:</label>
-      <select id="language">
-        <option value="en" selected>English</option>
-        <option value="es">Español</option>
-        <option value="pt">Português</option>
+      <span class="globe-icon">🌐</span>
+      <span id="languageLabel" class="visually-hidden">Language</span>
+      <select id="language" aria-labelledby="languageLabel">
+        <option value="en" selected>🇺� EEnglish</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="pt">🇧🇷 Português</option>
       </select>
     </div>
 
