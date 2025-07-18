@@ -35,6 +35,27 @@ An interactive web application featuring a spinning roulette wheel for the 17 UN
 
 The Sustainable Development Goals (SDGs) are a collection of 17 interlinked global goals designed to be a "blueprint to achieve a better and more sustainable future for all". The SDGs were set up in 2015 by the United Nations General Assembly and are intended to be achieved by the year 2030.
 
+## Deployment
+
+This project is set up to be deployed as a static site on GitHub Pages. To deploy:
+
+1. Push your code to the master branch of your GitHub repository
+2. Go to your repository on GitHub
+3. Navigate to Settings > Pages
+4. Under "Source", select "Deploy from a branch"
+5. Select "master" branch and "/ (root)" folder
+6. Click "Save"
+7. Wait a few minutes for the deployment to complete
+8. Your site will be available at `https://[your-username].github.io/[repository-name]/`
+
+## Note on SDG Icons
+
+The application currently uses external URLs for the SDG icons from the UN website. If these URLs stop working:
+
+1. Download the official SDG icons
+2. Place them in the `icons` folder
+3. Update the paths in `sdg-data.js` to use local icons instead
+
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
