@@ -8,6 +8,12 @@ body {
   font-family: "Arial", sans-serif;
   background-color: #f5f5f5;
   color: #333;
+  overflow-x: hidden;
+}
+
+body.dragging {
+  overflow: hidden;
+  touch-action: none;
 }
 
 .container {
@@ -20,6 +26,7 @@ body {
 h1 {
   margin-bottom: 30px;
   color: #0a97b0;
+  font-size: 2.5rem;
 }
 
 .roulette-container {
@@ -27,6 +34,8 @@ h1 {
   width: 700px;
   height: 700px;
   margin: 0 auto 40px;
+  max-width: 100%;
+  max-height: 90vw; /* Limit height on mobile */
 }
 
 .roulette-wheel {
@@ -184,5 +193,116 @@ h1 {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+
+  .roulette-container {
+    width: 90vw;
+    height: 90vw;
+    margin-bottom: 30px;
+  }
+
+  .wheel-center {
+    width: 80px;
+    height: 80px;
+  }
+
+  .selector {
+    width: 40px;
+    height: 60px;
+    top: -25px;
+  }
+
+  .segment-content img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .lever-container {
+    height: 150px;
+  }
+
+  .lever {
+    height: 120px;
+  }
+
+  .lever::after {
+    width: 30px;
+    height: 30px;
+  }
+
+  .lever-power {
+    width: 80%;
+    bottom: -35px;
+  }
+
+  .result-container {
+    padding: 15px;
+  }
+
+  #goalDescription img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+
+  .container {
+    padding: 10px;
+  }
+
+  .roulette-container {
+    margin-bottom: 20px;
+  }
+
+  .wheel-center {
+    width: 60px;
+    height: 60px;
+  }
+
+  .selector {
+    width: 30px;
+    height: 50px;
+    top: -20px;
+  }
+
+  .segment-content img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .lever-container {
+    height: 120px;
+    margin-bottom: 30px;
+  }
+
+  .lever {
+    height: 100px;
+  }
+
+  .lever::after {
+    width: 25px;
+    height: 25px;
+  }
+
+  .result-container {
+    margin-top: 20px;
+    padding: 10px;
+  }
+
+  #goalDescription {
+    font-size: 0.9rem;
   }
 }

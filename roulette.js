@@ -6,7 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const powerValue = document.getElementById("powerValue");
   const selectedGoal = document.getElementById("selectedGoal");
   const goalDescription = document.getElementById("goalDescription");
-  const iconSize = 72;
+
+  // Responsive icon sizing
+  const isMobile = window.innerWidth < 768;
+  const iconSize = isMobile ? 48 : 72;
 
   // Variables
   let isDragging = false;
@@ -21,6 +24,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Create wheel segments
   createWheel();
 
+  // Handle window resize
+  window.addEventListener("resize", handleResize);
+
   // Lever event listeners
   lever.addEventListener("mousedown", startDrag);
   document.addEventListener("mousemove", drag);
@@ -30,6 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
   lever.addEventListener("touchstart", startDragTouch);
   document.addEventListener("touchmove", dragTouch);
   document.addEventListener("touchend", endDrag);
+
+  // Handle window resize
+  function handleResize() {
+    // Recreate wheel with appropriate sizes for the current screen
+    createWheel();
+  }
 
   // Create wheel segments based on SDG data
   function createWheel() {
@@ -67,6 +79,13 @@ document.addEventListener("DOMContentLoaded", function () {
     iconsContainer.style.height = "100%";
     iconsContainer.style.borderRadius = "50%";
 
+    // Calculate radius based on wheel size
+    const wheelSize = Math.min(
+      rouletteWheel.offsetWidth,
+      rouletteWheel.offsetHeight
+    );
+    const radius = wheelSize * 0.37; // Adjust radius based on wheel size
+
     sdgData.forEach((goal, index) => {
       const iconWrapper = document.createElement("div");
       iconWrapper.style.position = "absolute";
@@ -75,7 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Calculate position on the circle
       const angle = index * segmentAngle + segmentAngle / 2;
-      const radius = 260; // Distance from center (adjusted for the 700px wheel)
       const x =
         Math.cos(((angle - 90) * Math.PI) / 180) * radius - iconSize / 2;
       const y =
@@ -88,9 +106,25 @@ document.addEventListener("DOMContentLoaded", function () {
       icon.alt = goal.name;
       icon.style.width = `${iconSize}px`;
       icon.style.height = `${iconSize}px`;
-      // icon.style.marginLeft = "-30px";
-      // icon.style.marginTop = "-30px";
       icon.style.objectFit = "contain";
+
+      // Add error handling for icon loading
+      icon.onerror = function () {
+        // Replace with a text fallback if image fails to load
+        const textFallback = document.createElement("div");
+        textFallback.textContent = goal.id;
+        textFallback.style.width = `${iconSize}px`;
+        textFallback.style.height = `${iconSize}px`;
+        textFallback.style.backgroundColor = goal.color;
+        textFallback.style.color = "#fff";
+        textFallback.style.borderRadius = "50%";
+        textFallback.style.display = "flex";
+        textFallback.style.alignItems = "center";
+        textFallback.style.justifyContent = "center";
+        textFallback.style.fontWeight = "bold";
+        textFallback.style.fontSize = `${iconSize / 2}px`;
+        iconWrapper.replaceChild(textFallback, icon);
+      };
 
       iconWrapper.appendChild(icon);
       iconsContainer.appendChild(iconWrapper);
@@ -107,6 +141,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Remove transition during dragging for immediate response
     lever.style.transition = "none";
     e.preventDefault();
+
+    // Add a class to prevent scrolling on mobile
+    document.body.classList.add("dragging");
   }
 
   // Start dragging for touch devices
@@ -116,6 +153,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Remove transition during dragging for immediate response
     lever.style.transition = "none";
     e.preventDefault();
+
+    // Add a class to prevent scrolling on mobile
+    document.body.classList.add("dragging");
   }
 
   // Drag the lever
@@ -125,8 +165,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const currentY = e.clientY;
     const diff = startY - currentY;
 
+    // Adjust sensitivity based on screen size
+    const sensitivityFactor = window.innerWidth < 768 ? 1.5 : 2;
+
     // Limit the lever rotation
-    const rotation = Math.min(Math.max(diff / 2, 0), 90);
+    const rotation = Math.min(Math.max(diff / sensitivityFactor, 0), 90);
 
     // Update lever position
     lever.style.transform = `translateX(-50%) rotate(-${rotation}deg)`;
@@ -144,8 +187,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const currentY = e.touches[0].clientY;
     const diff = startY - currentY;
 
+    // Adjust sensitivity based on screen size
+    const sensitivityFactor = window.innerWidth < 768 ? 1.5 : 2;
+
     // Limit the lever rotation
-    const rotation = Math.min(Math.max(diff / 2, 0), 90);
+    const rotation = Math.min(Math.max(diff / sensitivityFactor, 0), 90);
 
     // Update lever position
     lever.style.transform = `translateX(-50%) rotate(-${rotation}deg)`;
@@ -154,6 +200,9 @@ document.addEventListener("DOMContentLoaded", function () {
     power = Math.round((rotation / 90) * 100);
     powerLevel.style.width = `${power}%`;
     powerValue.textContent = power;
+
+    // Prevent default to avoid scrolling while dragging
+    e.preventDefault();
   }
 
   // End dragging and spin the wheel
@@ -162,6 +211,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     isDragging = false;
     lever.style.cursor = "grab";
+
+    // Remove the dragging class
+    document.body.classList.remove("dragging");
 
     // Reset lever position with animation
     lever.style.transition = "transform 0.5s ease";
@@ -208,7 +260,6 @@ document.addEventListener("DOMContentLoaded", function () {
     rouletteWheel.style.transition = `transform ${duration}s cubic-bezier(0.1, 0.7, 0.1, 1)`;
     rouletteWheel.style.transform = `rotate(${targetRotation}deg)`;
 
-    console.log(`rotation: ${targetRotation}`);
     // Update current rotation
     currentRotation = targetRotation;
 
@@ -227,10 +278,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Update result display
       selectedGoal.textContent = selected.name;
+
+      // Responsive result display
+      const isMobile = window.innerWidth < 768;
+      const imgSize = isMobile ? "40px" : "60px";
+      const fontSize = isMobile ? "1rem" : "1.2rem";
+
       goalDescription.innerHTML = `
-                <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                    <img src="${selected.icon}" alt="${selected.name}" style="width: 60px; height: 60px; margin-right: 15px;">
-                    <h3 style="color: ${selected.color};">Goal ${selected.id}: ${selected.name}</h3>
+                <div style="display: flex; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
+                    <img src="${selected.icon}" alt="${selected.name}" style="width: ${imgSize}; height: ${imgSize}; margin-right: 15px;" onerror="this.outerHTML='<div style=\'width: ${imgSize}; height: ${imgSize}; background-color: ${selected.color}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;\'>${selected.id}</div>'">
+                    <h3 style="color: ${selected.color}; font-size: ${fontSize};">Goal ${selected.id}: ${selected.name}</h3>
                 </div>
                 <p>${selected.description}</p>
             `;
