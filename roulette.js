@@ -6,6 +6,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const powerValue = document.getElementById("powerValue");
   const selectedGoal = document.getElementById("selectedGoal");
   const goalDescription = document.getElementById("goalDescription");
+  const languageSelector = document.getElementById("language");
+  const pageTitle = document.getElementById("pageTitle");
+  const powerLabel = document.getElementById("powerLabel");
+  const selectedGoalLabel = document.getElementById("selectedGoalLabel");
+  const languageLabel = document.getElementById("languageLabel");
 
   // Responsive icon sizing
   const isMobile = window.innerWidth < 768;
@@ -20,6 +25,25 @@ document.addEventListener("DOMContentLoaded", function () {
   const initialSegment = Math.floor(Math.random() * 17);
   let currentRotation = -segmentAngle / 2 + initialSegment * segmentAngle;
   let spinTimeout;
+
+  // Current language (default: English)
+  let currentLanguage = "en";
+
+  // Initialize language from localStorage if available
+  if (localStorage.getItem("sdgRouletteLanguage")) {
+    currentLanguage = localStorage.getItem("sdgRouletteLanguage");
+    languageSelector.value = currentLanguage;
+  }
+
+  // Apply initial localization
+  updateLanguage(currentLanguage);
+
+  // Language selector event listener
+  languageSelector.addEventListener("change", function () {
+    currentLanguage = this.value;
+    localStorage.setItem("sdgRouletteLanguage", currentLanguage);
+    updateLanguage(currentLanguage);
+  });
 
   // Create wheel segments
   createWheel();
@@ -36,6 +60,86 @@ document.addEventListener("DOMContentLoaded", function () {
   lever.addEventListener("touchstart", startDragTouch);
   document.addEventListener("touchmove", dragTouch);
   document.addEventListener("touchend", endDrag);
+
+  // Update language function
+  function updateLanguage(lang) {
+    // Update UI text
+    pageTitle.textContent = localization[lang].title;
+    powerLabel.textContent = localization[lang].power;
+    selectedGoalLabel.textContent = localization[lang].selectedGoal;
+    languageLabel.textContent = localization[lang].languageSelector;
+
+    // Update language options
+    document.querySelector('#language option[value="en"]').textContent =
+      localization[lang].english;
+    document.querySelector('#language option[value="es"]').textContent =
+      localization[lang].spanish;
+    document.querySelector('#language option[value="pt"]').textContent =
+      localization[lang].portuguese;
+
+    // Update selected goal text if it's the default text
+    if (
+      selectedGoal.textContent === "Spin the wheel!" ||
+      selectedGoal.textContent === "¡Gira la ruleta!" ||
+      selectedGoal.textContent === "Gire a roleta!"
+    ) {
+      selectedGoal.textContent = localization[lang].spinTheWheel;
+    } else {
+      // If a goal is already selected, update its name and description
+      updateSelectedGoalLanguage();
+    }
+
+    // Update document language
+    document.documentElement.lang = lang;
+  }
+
+  // Update the selected goal's name and description based on current language
+  function updateSelectedGoalLanguage() {
+    // Only proceed if a goal is selected (not the default text)
+    if (
+      selectedGoal.textContent === localization[currentLanguage].spinTheWheel
+    ) {
+      return;
+    }
+
+    // Find the currently selected goal by checking the description content
+    const goalDescriptionText = goalDescription.querySelector("p").textContent;
+    let selectedGoalId = 1;
+
+    // Find which goal is currently selected by matching descriptions
+    for (let i = 0; i < sdgTranslations.en.length; i++) {
+      if (
+        sdgTranslations.en[i].description === goalDescriptionText ||
+        sdgTranslations.es[i].description === goalDescriptionText ||
+        sdgTranslations.pt[i].description === goalDescriptionText
+      ) {
+        selectedGoalId = sdgTranslations.en[i].id;
+        break;
+      }
+    }
+
+    // Get the translated goal data
+    const translatedGoal = sdgTranslations[currentLanguage].find(
+      (goal) => goal.id === selectedGoalId
+    );
+    const originalGoal = sdgData.find((goal) => goal.id === selectedGoalId);
+
+    // Update the UI with translated content
+    selectedGoal.textContent = translatedGoal.name;
+
+    // Responsive result display
+    const isMobile = window.innerWidth < 768;
+    const imgSize = isMobile ? "40px" : "60px";
+    const fontSize = isMobile ? "1rem" : "1.2rem";
+
+    goalDescription.innerHTML = `
+      <div style="display: flex; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
+          <img src="${originalGoal.icon}" alt="${translatedGoal.name}" style="width: ${imgSize}; height: ${imgSize}; margin-right: 15px;" onerror="this.outerHTML='<div style=\'width: ${imgSize}; height: ${imgSize}; background-color: ${originalGoal.color}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;\'>${originalGoal.id}</div>'">
+          <h3 style="color: ${originalGoal.color}; font-size: ${fontSize};">Goal ${originalGoal.id}: ${translatedGoal.name}</h3>
+      </div>
+      <p>${translatedGoal.description}</p>
+    `;
+  }
 
   // Handle window resize
   function handleResize() {
@@ -276,8 +380,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const selected =
         sdgData[(sdgData.length - selectedIndex - 1) % sdgData.length];
 
+      // Get the translated goal data
+      const translatedGoal = sdgTranslations[currentLanguage].find(
+        (goal) => goal.id === selected.id
+      );
+
       // Update result display
-      selectedGoal.textContent = selected.name;
+      selectedGoal.textContent = translatedGoal.name;
 
       // Responsive result display
       const isMobile = window.innerWidth < 768;
@@ -286,10 +395,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       goalDescription.innerHTML = `
                 <div style="display: flex; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
-                    <img src="${selected.icon}" alt="${selected.name}" style="width: ${imgSize}; height: ${imgSize}; margin-right: 15px;" onerror="this.outerHTML='<div style=\'width: ${imgSize}; height: ${imgSize}; background-color: ${selected.color}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;\'>${selected.id}</div>'">
-                    <h3 style="color: ${selected.color}; font-size: ${fontSize};">Goal ${selected.id}: ${selected.name}</h3>
+                    <img src="${selected.icon}" alt="${translatedGoal.name}" style="width: ${imgSize}; height: ${imgSize}; margin-right: 15px;" onerror="this.outerHTML='<div style=\'width: ${imgSize}; height: ${imgSize}; background-color: ${selected.color}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px;\'>${selected.id}</div>'">
+                    <h3 style="color: ${selected.color}; font-size: ${fontSize};">Goal ${selected.id}: ${translatedGoal.name}</h3>
                 </div>
-                <p>${selected.description}</p>
+                <p>${translatedGoal.description}</p>
             `;
 
       // Remove transition for instant rotation changes

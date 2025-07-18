@@ -10,7 +10,16 @@
 
 <body>
   <div class="container">
-    <h1>Sustainable Development Goals Roulette</h1>
+    <div class="language-selector">
+      <label for="language" id="languageLabel">Language:</label>
+      <select id="language">
+        <option value="en" selected>English</option>
+        <option value="es">Español</option>
+        <option value="pt">Português</option>
+      </select>
+    </div>
+
+    <h1 id="pageTitle">Sustainable Development Goals Roulette</h1>
 
     <div class="roulette-container">
       <div class="roulette-wheel">
@@ -27,16 +36,17 @@
         <div class="power-meter">
           <div class="power-level" id="powerLevel"></div>
         </div>
-        <p>Power: <span id="powerValue">0</span>%</p>
+        <p><span id="powerLabel">Power</span>: <span id="powerValue">0</span>%</p>
       </div>
     </div>
 
     <div class="result-container">
-      <h2>Selected Goal: <span id="selectedGoal">Spin the wheel!</span></h2>
+      <h2><span id="selectedGoalLabel">Selected Goal</span>: <span id="selectedGoal">Spin the wheel!</span></h2>
       <div id="goalDescription"></div>
     </div>
   </div>
 
+  <script src="localization.js"></script>
   <script src="sdg-data.js"></script>
   <script src="roulette.js"></script>
 </body>

@@ -16,6 +16,37 @@ body.dragging {
   touch-action: none;
 }
 
+.language-selector {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+}
+
+.language-selector select {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .language-selector {
+    top: 10px;
+    right: 10px;
+  }
+
+  .language-selector select {
+    font-size: 14px;
+    padding: 3px 6px;
+  }
+}
+
 .container {
   max-width: 1000px;
   margin: 0 auto;

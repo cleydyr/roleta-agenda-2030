@@ -9,6 +9,8 @@ An interactive web application featuring a spinning roulette wheel for the 17 UN
 - Pull-down lever mechanism to control spin speed and force
 - Realistic spinning animation with physics-based deceleration
 - Detailed display of the selected goal after spinning
+- Multi-language support (English, Spanish, and Portuguese)
+- Mobile-responsive design for all devices
 
 ## How to Use
 
